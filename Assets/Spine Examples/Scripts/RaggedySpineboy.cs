@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,76 +27,80 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using Spine.Unity;
-using System.Collections;
 using UnityEngine;
+using System.Collections;
+using Spine.Unity;
+using UnityEngine.EventSystems; // << FIX: Added for the Event System interface
 
 namespace Spine.Unity.Examples {
-	public class RaggedySpineboy : MonoBehaviour {
+    
+    // << FIX: Implement the IPointerUpHandler interface for touch/click release events
+    public class RaggedySpineboy : MonoBehaviour, IPointerUpHandler { 
 
-		public LayerMask groundMask;
-		public float restoreDuration = 0.5f;
-		public Vector2 launchVelocity = new Vector2(50, 100);
+        public LayerMask groundMask;
+        public float restoreDuration = 0.5f;
+        public Vector2 launchVelocity = new Vector2(50,100);
 
-		Spine.Unity.Examples.SkeletonRagdoll2D ragdoll;
-		Collider2D naturalCollider;
+        Spine.Unity.Examples.SkeletonRagdoll2D ragdoll;
+        Collider2D naturalCollider;
 
-		void Start () {
-			ragdoll = GetComponent<Spine.Unity.Examples.SkeletonRagdoll2D>();
-			naturalCollider = GetComponent<Collider2D>();
-		}
+        void Start () {
+            ragdoll = GetComponent<Spine.Unity.Examples.SkeletonRagdoll2D>();
+            naturalCollider = GetComponent<Collider2D>();
+        }
 
-		void AddRigidbody () {
-			Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
-			rb.freezeRotation = true;
-			naturalCollider.enabled = true;
-		}
+        void AddRigidbody () {
+            var rb = gameObject.AddComponent<Rigidbody2D>();
+            rb.freezeRotation = true;
+            naturalCollider.enabled = true;
+        }
 
-		void RemoveRigidbody () {
-			Destroy(GetComponent<Rigidbody2D>());
-			naturalCollider.enabled = false;
-		}
+        void RemoveRigidbody () {
+            Destroy(GetComponent<Rigidbody2D>());
+            naturalCollider.enabled = false;
+        }
 
-		void OnMouseUp () {
-			if (naturalCollider.enabled)
-				Launch();
-		}
+        // << FIX: Replaced OnMouseUp with the mobile-optimized OnPointerUp
+        public void OnPointerUp (PointerEventData eventData) {
+            if (naturalCollider.enabled)
+                Launch();
+        }
 
-		void Launch () {
-			RemoveRigidbody();
-			ragdoll.Apply();
-			ragdoll.RootRigidbody.velocity = new Vector2(Random.Range(-launchVelocity.x, launchVelocity.x), launchVelocity.y);
-			StartCoroutine(WaitUntilStopped());
-		}
+        void Launch () {
+            RemoveRigidbody();
+            ragdoll.Apply();
+            ragdoll.RootRigidbody.velocity = new Vector2(Random.Range(-launchVelocity.x, launchVelocity.x), launchVelocity.y);
+            StartCoroutine(WaitUntilStopped());
+        }
 
-		IEnumerator Restore () {
-			Vector3 estimatedPos = ragdoll.EstimatedSkeletonPosition;
-			Vector3 rbPosition = ragdoll.RootRigidbody.position;
+        IEnumerator Restore () {
+            Vector3 estimatedPos = ragdoll.EstimatedSkeletonPosition;
+            Vector3 rbPosition = ragdoll.RootRigidbody.position;
 
-			Vector3 skeletonPoint = estimatedPos;
-			RaycastHit2D hit = Physics2D.Raycast((Vector2)rbPosition, (Vector2)(estimatedPos - rbPosition), Vector3.Distance(estimatedPos, rbPosition), groundMask);
-			if (hit.collider != null)
-				skeletonPoint = hit.point;
+            Vector3 skeletonPoint = estimatedPos;
+            RaycastHit2D hit = Physics2D.Raycast((Vector2)rbPosition, (Vector2)(estimatedPos - rbPosition), Vector3.Distance(estimatedPos, rbPosition), groundMask);
+            if (hit.collider != null)
+                skeletonPoint = hit.point;
 
-			ragdoll.RootRigidbody.isKinematic = true;
-			ragdoll.SetSkeletonPosition(skeletonPoint);
+            ragdoll.RootRigidbody.isKinematic = true;
+            ragdoll.SetSkeletonPosition(skeletonPoint);
 
-			yield return ragdoll.SmoothMix(0, restoreDuration);
-			ragdoll.Remove();
+            yield return ragdoll.SmoothMix(0, restoreDuration);
+            ragdoll.Remove();
 
-			AddRigidbody();
-		}
+            AddRigidbody();
+        }
 
-		IEnumerator WaitUntilStopped () {
-			yield return new WaitForSeconds(0.5f);
+        IEnumerator WaitUntilStopped () {
+            yield return new WaitForSeconds(0.5f);
 
-			float t = 0;
-			while (t < 0.5f) {
-				t = (ragdoll.RootRigidbody.velocity.magnitude > 0.09f) ? 0 : t + Time.deltaTime;
-				yield return null;
-			}
+            float t = 0;
+            while (t < 0.5f) {
+                t = (ragdoll.RootRigidbody.velocity.magnitude > 0.09f) ? 0 : t + Time.deltaTime;
+                yield return null;
+            }
 
-			StartCoroutine(Restore());
-		}
-	}
+            StartCoroutine(Restore());
+        }
+    }
 }

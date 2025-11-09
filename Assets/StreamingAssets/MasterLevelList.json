@@ -1,0 +1,47 @@
+[
+  {
+    "level": 1,
+    "generatorType": "Ring",
+    "healthRule": "Solid",
+    "powerupPlacement": "None",
+    "baseHealth": 1,
+    "shapeSize": 4,
+    "symbolName": ""
+  },
+  {
+    "level": 2,
+    "generatorType": "Spiral",
+    "healthRule": "Growing",
+    "powerupPlacement": "Center",
+    "baseHealth": 2,
+    "shapeSize": 5,
+    "symbolName": ""
+  },
+  {
+    "level": 3,
+    "generatorType": "Symbol",
+    "healthRule": "Edges",
+    "powerupPlacement": "Eyes",
+    "baseHealth": 3,
+    "shapeSize": 0,
+    "symbolName": "SmileyFace"
+  },
+  {
+    "level": 4,
+    "generatorType": "Checkerboard",
+    "healthRule": "Alternating",
+    "powerupPlacement": "Random",
+    "baseHealth": 3,
+    "shapeSize": 6,
+    "symbolName": ""
+  },
+  {
+    "level": 5,
+    "generatorType": "Symbol",
+    "healthRule": "Entry",
+    "powerupPlacement": "Entry",
+    "baseHealth": 5,
+    "shapeSize": 0,
+    "symbolName": "YourImageExample"
+  }
+]
