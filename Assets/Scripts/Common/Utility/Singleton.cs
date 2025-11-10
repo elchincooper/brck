@@ -53,12 +53,6 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 					}
 					else
 					{
-						// --- [THE FIX] THIS IS THE NEW LINE ---
-						// This tells the instance it found (your PlayManager)
-						// to not be destroyed when the scene changes.
-						DontDestroyOnLoad(_instance.gameObject);
-						// --- END FIX ---
-
 						// Debug.Log("[Singleton] Using instance already created: " + _instance.gameObject.name);
 					}
 				}

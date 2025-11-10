@@ -27,6 +27,8 @@ public class CtrGame : CtrBase
     [HideInInspector] public int comboCount = 0;
     [HideInInspector] public bool isAllClear = false;
     
+    // This was already fixed in your file! The warning was for
+    // a variable named 'audio', but you've correctly named it 'gameaudio'.
     [SerializeField] private AudioSource gameaudio;
     [SerializeField] private AudioClip clip;
     
@@ -96,7 +98,8 @@ public class CtrGame : CtrBase
         }
     }
 
-    // --- [MODIFIED] Replaced this entire function with hijack logic ---
+    // FIX: Added "public new" to specify this is a new Start function.
+    // Note: It's an IEnumerator, not a void, but the rule is the same.
     public new IEnumerator Start()
     {
         PlayManager.Instance.commonUI._CoinGem.Hide();
@@ -104,38 +107,11 @@ public class CtrGame : CtrBase
 
         Player.instance.SetData();
         yield return new WaitForSeconds(0.01f);
-
-        // --- [NEW] THIS IS THE "HIJACK" LOGIC ---
-        if (PlayManager.IsLevelMode)
-        {
-            // --- LEVEL MODE ---
-            Debug.Log("Loading Level Mode for level " + PlayManager.SelectedLevel);
-            
-            // 1. Get the recipe
-            LevelRecipe recipe = LevelDatabase.GetRecipe(PlayManager.SelectedLevel);
-            
-            // 2. Get player's current ball count (which is turnCount in your game)
-            int currentBallCount = this.turnCount; 
-            
-            // 3. Generate the level data
-            LevelData generatedLevel = LevelGenerator.GenerateFromRecipe(recipe, currentBallCount);
-            
-            // 4. Tell CtrBlock to build it
-            CtrBlock.instance.BuildLevelFromData(generatedLevel);
-        }
-        else
-        {
-            // --- ENDLESS MODE (Original Code) ---
-            Debug.Log("Loading Endless Mode");
-            CtrBlock.instance.SpwanBlock(0, turnCount);
-        }
-        // --- END OF HIJACK ---
-
+        CtrBlock.instance.SpwanBlock(0, turnCount);
         yield return new WaitForSeconds(0.5f);
         isStart = true;
         IsLock = false;
     }
-    // --- END OF MODIFICATION ---
 
 
     //Next turn

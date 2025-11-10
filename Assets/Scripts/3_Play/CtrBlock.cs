@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
@@ -91,19 +91,4 @@ public class CtrBlock : MonoBehaviour
 
         CtrUI.instance.AllClear();
     }
-
-    // --- [NEW] THIS FUNCTION IS CALLED BY CTRGAME ---
-    public void BuildLevelFromData(LevelData level)
-    {
-        // 1. Create a single BlockGroup to hold all the bricks
-        BlockGroup blockGroup = PoolManager
-            .Spawn(CtrPool.instance.pBlockGroups, transfomY[0].position, Quaternion.identity)
-            .GetComponent<BlockGroup>();
-        
-        blockGroups.Add(blockGroup);
-        
-        // 2. Call the new "hijack" function on BlockGroup
-        blockGroup.SetBlockGroupFromGeneratedData(level, 0);
-    }
-    // --- END OF NEW FUNCTION ---
 }

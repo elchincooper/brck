@@ -25,9 +25,6 @@ public class PlayManager : Singleton<PlayManager>
     [HideInInspector] public int countHighestCombo;
     [HideInInspector] public bool isPopupOn = false;
 
-    public static bool IsLevelMode = false;
-    public static int SelectedLevel = 1;
-
     [HideInInspector] public PanelBase panelBase;
     [HideInInspector] public CommonUI commonUI;
     public Scene scene;
@@ -42,31 +39,8 @@ public class PlayManager : Singleton<PlayManager>
     }
 
 
-    // --- [MODIFIED] This is the complete fix ---
-    // This is the Awake method for PlayManager itself.
-    // It runs when the PlayManager in your MainMenu scene is created.
     private void Awake()
     {
-        // --- [NEW] Singleton Persistence Logic ---
-        
-        // This calls the Singleton.cs 'Instance' getter.
-        // If an Instance already exists (from a previous scene),
-        // and it's NOT this one, then destroy this new one.
-        if (Instance != null && Instance != this)
-        {
-            Debug.Log("Duplicate PlayManager found. Destroying new one.");
-            Destroy(gameObject);
-            return;
-        }
-        
-        // This is the correct, original Instance (the one from MainMenu).
-        // We tell it NOT to be destroyed when we load the GameScene.
-        // This is the line your Singleton.cs was missing.
-        DontDestroyOnLoad(this.gameObject);
-        
-        // --- [END] Singleton Persistence Logic ---
-
-
         //Check current scene
         SceneCheck();
 
@@ -79,7 +53,6 @@ public class PlayManager : Singleton<PlayManager>
             commonUI.GetComponent<Canvas>().worldCamera = Camera.main;
         }
     }
-    // --- END OF MODIFICATION ---
 
 
     /// <summary>
@@ -326,3 +299,5 @@ public class PlayManager : Singleton<PlayManager>
 #endif
     }
 }
+
+

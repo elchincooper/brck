@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿﻿using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
@@ -23,11 +23,7 @@ public class CtrHome : CtrBase
     public MyInfo _MyInfo;
     float posOpenY = -180f;
     float posCloseY = -930f;
-    
-    #pragma warning disable 0414
     bool isPlay = false;
-    #pragma warning restore 0414
-    
     public GameObject lockScreen;
 
     //Panels
@@ -36,10 +32,9 @@ public class CtrHome : CtrBase
     public PanelRanking panelRanking;
     public PanelBallSkin panelBallSkin;
     public PanelShop panelShop;
-    public PanelLevelSelect panelLevelSelect; 
     public PopupBuy _PopupBuy;
 
-    public new void Start()
+    public void Start()
     {
         SetData();
     }
@@ -76,8 +71,6 @@ public class CtrHome : CtrBase
 
         //패널상점 초기화
         panelShop.UIReset();
-
-        panelLevelSelect.UIReset(); 
 
         _PopupBuy.UIReset();
 
@@ -168,14 +161,12 @@ public class CtrHome : CtrBase
 
 
     #region //클릭 플레이
+
     public void ClickPlay()
     {
-        // --- [FIX] This line is CRITICAL for your Endless Mode to work ---
-        PlayManager.IsLevelMode = false; // Set game mode back to Endless
-        // --- END FIX ---
-
         panelStart.SetPanelStart();
     }
+
     #endregion
 
 
@@ -199,7 +190,6 @@ public class CtrHome : CtrBase
     }
 
     #endregion
-
 
     #region //클릭 설정
 
@@ -232,16 +222,6 @@ public class CtrHome : CtrBase
     }
 
     #endregion
-
-    // --- [FIX] The extra "D" character was removed here ---
-    #region //Click Levels
-    public void Click_Levels()
-    { 
-        panelLevelSelect.SetData(); // Call the setup function
-        panelLevelSelect.Open();    // Tell the panel to open
-    }
-    #endregion
-    // --- END FIX ---
 
 
     //클릭 구매복원
@@ -313,9 +293,6 @@ public class CtrHome : CtrBase
                     targetGroup.DOFade(1f, time).SetEase(Ease.OutCubic);
                     targetGroup.transform.DOScale(1f, time).SetEase(Ease.OutCubic);
 
-                    targetGroup.interactable = true;
-                    targetGroup.blocksRaycasts = true;
-
 
                     if (targetGroup.GetComponent<PanelRanking>() != null)
                     {
@@ -330,9 +307,6 @@ public class CtrHome : CtrBase
 
             if (targetGroup != null)
             {
-                targetGroup.interactable = false;
-                targetGroup.blocksRaycasts = false;
-
                 targetGroup.DOKill();
                 targetGroup.DOFade(0f, time).SetEase(Ease.OutCubic);
                 targetGroup.transform.DOScale(0.95f, time).SetEase(Ease.OutCubic).OnComplete(() =>
